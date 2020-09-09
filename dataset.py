@@ -17,7 +17,6 @@ def data_split():
             x.append(root_dir / classes / img_file)
             y.append(classes_num)
         classes_num += 1
-#     x, y = shuffle(x, y, random_state=255)
     x_train, x_val, y_train, y_val = train_test_split(x, y, test_size=0.2)
 
     return x_train, x_val, y_train, y_val
@@ -28,17 +27,6 @@ class TrainDataset(Dataset):
         self.x = x_train
         self.y = y_train
         self.transform = transform
-        # self.root_dir = Path(root_dir)
-        # self.transform = transform
-        #
-        # self.x = []
-        # self.y = []
-        # classes_num = 0
-        # for classes in os.listdir(self.root_dir):
-        #     for img_file in os.listdir(self.root_dir / classes):
-        #         self.x.append(self.root_dir / classes / img_file)
-        #         self.y.append(classes_num)
-        #     classes_num += 1
 
     def __len__(self):
         return len(self.x)
