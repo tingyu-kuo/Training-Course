@@ -2,7 +2,7 @@ import parameter
 import torch
 import torch.nn as nn
 from models import VGG11
-from dataset import TrainDataset, ValDataset, data_split
+from dataset import TrainDataset, data_split
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from pathlib import Path
@@ -25,7 +25,7 @@ def train():
     ])
     x_train, x_val, y_train, y_val = data_split()
     train_set = TrainDataset(x_train, y_train, data_transform)
-    val_set = ValDataset(x_val, y_val, data_transform)
+    val_set = TDataset(x_val, y_val, data_transform)
     train_data_loader = DataLoader(dataset=train_set, batch_size=32, shuffle=True, num_workers=2)
     val_data_loader = DataLoader(dataset=val_set, batch_size=32, shuffle=True, num_workers=2)
 
