@@ -36,19 +36,3 @@ class TrainDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         return image, self.y[index]
-
-
-class ValDataset(Dataset):
-    def __init__(self, x_val, y_val, transform=None):
-        self.x = x_val
-        self.y = y_val
-        self.transform = transform
-
-    def __len__(self):
-        return len(self.x)
-
-    def __getitem__(self, index):
-        image = Image.open(self.x[index]).convert('RGB')
-        if self.transform:
-            image = self.transform(image)
-        return image, self.y[index]
