@@ -2,7 +2,7 @@ import parameter
 import torch
 import torch.nn as nn
 from models import VGG11
-from dataset import TrainDataset, ValDataset, data_split
+from dataset import TrainDataset, data_split
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from pathlib import Path
@@ -26,7 +26,7 @@ def train():
     ])
     x_train, x_val, y_train, y_val = data_split()
     train_set = TrainDataset(x_train, y_train, data_transform)
-    val_set = ValDataset(x_val, y_val, data_transform)
+    val_set = TrainDataset(x_val, y_val, data_transform)
     train_data_loader = DataLoader(dataset=train_set, batch_size=32, shuffle=True, num_workers=2)
     val_data_loader = DataLoader(dataset=val_set, batch_size=32, shuffle=True, num_workers=2)
 
@@ -47,19 +47,19 @@ def train():
         val_loss = 0.0
         val_corrects = 0
 
-        for i, (inputs, labels) in enumerate(train_data_loader,0):
+        for i, (inputs, labels) in enumerate(train_data_loader):
             inputs = inputs.cuda(CUDA_DEVICE)
             labels = labels.cuda(CUDA_DEVICE)
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            _, preds = torch.max(outputs.data, 1)
+            preds = torch.argmax(outputs, dim=1)
             loss = loss_func(outputs, labels)
 
             loss.backward()
             optimizer.step()
 
-            training_loss += loss.data * inputs.size(0)
+            training_loss += loss.item()
             training_corrects += torch.sum(preds == labels.data).float()
             
         for i, (inputs, labels) in enumerate(val_data_loader,0):
@@ -67,10 +67,10 @@ def train():
             labels = labels.cuda(CUDA_DEVICE)
 
             outputs = model(inputs)
-            _, preds = torch.max(outputs.data, 1)
+            preds = torch.argmax(outputs, dim=1)
             loss = loss_func(outputs, labels)
 
-            val_loss += loss.data * inputs.size(0)
+            val_loss += loss.item()
             val_corrects += torch.sum(preds == labels.data).float()
         
         training_loss = training_loss / len(train_set)
